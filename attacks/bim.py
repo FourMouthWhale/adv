@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-def BIM(model, criterion, original_images, labels, epsilon, alpha=0.001, num_iterations=10):
+def BIM(model, criterion, original_images, labels, epsilon, num_iterations=10):
     """
     BIM (Basic Iterative Method)
     I-FGSM (Iterative Fast Gradient Sign Method)
@@ -12,10 +12,11 @@ def BIM(model, criterion, original_images, labels, epsilon, alpha=0.001, num_ite
     original_images: 原始图像
     labels: 原始图像的标签
     epsilon: 最大扰动幅度
-    alpha: 每次迭代的步长
     num_iterations: 迭代次数 
     
     """
+    # alpha 每次迭代步长
+    alpha = epsilon / num_iterations
     perturbed_images = original_images.clone().detach().requires_grad_(True)
 
     for _ in range(num_iterations):
@@ -23,6 +24,7 @@ def BIM(model, criterion, original_images, labels, epsilon, alpha=0.001, num_ite
         outputs = model(perturbed_images)
         loss = criterion(outputs, labels)
 
+        model.zero_grad()
         # 计算梯度
         loss.backward()
 

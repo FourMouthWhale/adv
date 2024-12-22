@@ -14,13 +14,17 @@ def FGSM(model, criterion, original_images, labels, epsilon):
     - epsilon: 扰动幅度
     
     """
-    outputs = model(original_images)
+    perturbed_images = original_images.clone().detach().requires_grad_(True)
+    
+    outputs = model(perturbed_images)
     loss = criterion(outputs, labels)
+    
     model.zero_grad()
     loss.backward()
-    data_grad = original_images.grad.data
-    sign_data_grad = data_grad.sign()
-    perturbed_image = original_images + epsilon * sign_data_grad
-    perturbed_image = torch.clamp(perturbed_image, 0, 1)
     
-    return perturbed_image
+    data_grad = perturbed_images.grad.data
+    sign_data_grad = data_grad.sign()
+    perturbed_images = perturbed_images + epsilon * sign_data_grad
+    perturbed_images = torch.clamp(perturbed_images, original_images - epsilon, original_images + epsilon)
+    
+    return perturbed_images
