@@ -1,2 +1,4 @@
 from .fgsm import *
-from .bmi import *
+from .bim import *
+from .mifgsm import *
+from .nifgsm import *
