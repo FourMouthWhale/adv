@@ -22,8 +22,6 @@ def VMI_FGSM(model, criterion, original_images, labels, epsilon, num_iterations=
     # 复制原始图像作为初始的对抗样本
     perturbed_images = original_images.clone().detach().requires_grad_(True)
     momentum = torch.zeros_like(original_images).detach().to(original_images.device)
-    # 初始化梯度方差为0
-    variance = torch.zeros_like(original_images).detach().to(original_images.device)
 
     for _ in range(num_iterations):
         outputs = model(perturbed_images)
@@ -36,6 +34,8 @@ def VMI_FGSM(model, criterion, original_images, labels, epsilon, num_iterations=
         # 计算邻域内的梯度方差
         if N > 0:
             variance = variance_tuning(model, criterion, perturbed_images, labels, epsilon, beta, N, data_grad)
+        else:
+            variance = torch.zeros_like(perturbed_images).detach().to(perturbed_images.device)
         # 更新动量，结合梯度方差
         momentum = decay * momentum + (data_grad + variance) / torch.sum(torch.abs(data_grad + variance), dim=(1, 2, 3), keepdim=True)
         # 计算带动量和方差调整的符号梯度
