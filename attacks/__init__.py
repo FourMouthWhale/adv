@@ -5,3 +5,4 @@ from .nifgsm import *
 from .pifgsm import *
 from .vmifgsm import *
 from .vnifgsm import *
+from .emifgsm import *

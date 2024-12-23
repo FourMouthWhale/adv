@@ -33,7 +33,7 @@ def VNI_FGSM(model, criterion, original_images, labels, epsilon, num_iterations=
         model.zero_grad()
         loss.backward()
         
-        data_grad = perturbed_images.grad.data
+        data_grad = nes_images.grad.data
 
         # 计算邻域内的梯度方差
         if N > 0:
