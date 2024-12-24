@@ -44,7 +44,7 @@ if __name__ == "__main__":
         original_images, labels = data[0].to(device), data[1].to(device)
         original_images.requires_grad = True
         
-        attack_name = 'EMI-FGSM'
+        attack_name = 'I-FGSSM'
         if attack_name == 'FGSM':
             perturbed_images = FGSM(model, criterion, original_images, labels, epsilon)
         elif attack_name == 'BIM':
@@ -61,6 +61,10 @@ if __name__ == "__main__":
             perturbed_images = VNI_FGSM(model, criterion, original_images, labels, epsilon)
         elif attack_name == 'EMI-FGSM':
             perturbed_images = EMI_FGSM(model, criterion, original_images, labels, epsilon)
+        elif attack_name == 'AI-FGTM':
+            perturbed_images = AI_FGTM(model, criterion, original_images, labels, epsilon)
+        elif attack_name == 'I-FGSSM':
+            perturbed_images = I_FGSSM(model, criterion, original_images, labels, epsilon)
         
         perturbed_outputs = model(perturbed_images)
         _, predicted = torch.max(perturbed_outputs.data, 1)

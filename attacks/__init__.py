@@ -6,3 +6,5 @@ from .pifgsm import *
 from .vmifgsm import *
 from .vnifgsm import *
 from .emifgsm import *
+from .aifgtm import *
+from .ifgssm import *
