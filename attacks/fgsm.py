@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+from .utils import compute_gradient
 
 
 def FGSM(model, criterion, original_images, labels, epsilon):
@@ -15,14 +16,7 @@ def FGSM(model, criterion, original_images, labels, epsilon):
     
     """
     perturbed_images = original_images.clone().detach().requires_grad_(True)
-    
-    outputs = model(perturbed_images)
-    loss = criterion(outputs, labels)
-    
-    model.zero_grad()
-    loss.backward()
-    
-    data_grad = perturbed_images.grad.data
+    data_grad = compute_gradient(model, criterion, perturbed_images, labels)
     sign_data_grad = data_grad.sign()
     perturbed_images = perturbed_images + epsilon * sign_data_grad
     perturbed_images = torch.clamp(perturbed_images, original_images - epsilon, original_images + epsilon)
